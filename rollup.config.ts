@@ -9,7 +9,10 @@ import servePlugin from 'rollup-plugin-serve';
 import css from 'rollup-plugin-import-css';
 
 export default defineConfig({
-  input: {},
+  input: {
+    'navbar-class-toggle-on-scroll-direction':
+      './src/features/navbar-class-toggle-on-scroll-direction.ts',
+  },
   output: {
     format: 'module',
     dir: 'dist',
