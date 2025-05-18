@@ -10,8 +10,8 @@ import css from 'rollup-plugin-import-css';
 
 export default defineConfig({
   input: {
-    'navbar-class-toggle-on-scroll-direction':
-      './src/features/navbar-class-toggle-on-scroll-direction.ts',
+    'toggle-on-scroll-direction': './src/features/toggle-on-scroll-direction.ts',
+    'toggle-after-target-scroll': './src/features/toggle-after-target-scroll.ts',
   },
   output: {
     format: 'module',
