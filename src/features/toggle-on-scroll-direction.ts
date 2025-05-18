@@ -18,6 +18,8 @@ const init = () => {
   const initialOffset = parseFloatFallback(navbar.dataset.scrollDirectionInitialOffset, 160);
   // targetTriggerClass: the CSS class to add/remove when scrolling
   const targetTriggerClass = fallback(navbar.dataset.scrollDirectionTriggerClass, 'scrolled-down');
+  // Reset threshold: position at which we reset the initialOffset check (defaults to 10px)
+  const resetThreshold = 10;
 
   // Track the last scroll position to determine scroll direction
   let lastScrollTop: number = window.scrollY || document.documentElement.scrollTop;
@@ -31,6 +33,16 @@ const init = () => {
     () => {
       // Get current scroll position
       const scrollPosition: number = window.scrollY || document.documentElement.scrollTop;
+
+      // Reset the initialOffset check when close to the top of the page
+      if (scrollPosition <= resetThreshold) {
+        hasPassedInitialOffset = false;
+        // Also remove the class if it's added
+        if (hasClassAdded) {
+          navbar.classList.remove(targetTriggerClass);
+          hasClassAdded = false;
+        }
+      }
 
       // Only activate behavior after scrolling past initialOffset
       if (!hasPassedInitialOffset) {
