@@ -15,9 +15,9 @@ const init = () => {
 
   // Get configuration from data attributes with fallback values
   // initialOffset: how far the user needs to scroll before the behavior activates
-  const initialOffset = parseFloatFallback(navbar.dataset.initialOffset, 160);
+  const initialOffset = parseFloatFallback(navbar.dataset.scrollDirectionInitialOffset, 160);
   // targetTriggerClass: the CSS class to add/remove when scrolling
-  const targetTriggerClass = fallback(navbar.dataset.triggerClass, 'hide-navbar');
+  const targetTriggerClass = fallback(navbar.dataset.scrollDirectionTriggerClass, 'scrolled-down');
 
   // Track the last scroll position to determine scroll direction
   let lastScrollTop: number = window.scrollY || document.documentElement.scrollTop;
