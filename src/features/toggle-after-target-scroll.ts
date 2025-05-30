@@ -34,34 +34,37 @@ const init = () => {
     let variableRemover: (() => void) | undefined = undefined;
 
     if (targetTriggerVarMode !== undefined) {
-      // Wait for variable modes to be loaded globally
-      window.wfVarModes.onReady((data) => {
-        const varModes = data;
-        const targetVarMode = targetTriggerVarMode ? varModes[targetTriggerVarMode] : undefined;
+      let varModes = window.wfVarModes?.data;
+      let targetVarMode =
+        targetTriggerVarMode && varModes ? varModes[targetTriggerVarMode] : undefined;
 
-        // Set up scroll detection that triggers the callback when crossing the threshold
-        detectScrollAmount(initialOffset, (beforeTargetScroll) => {
-          if (beforeTargetScroll) {
-            // User is above the scroll threshold
-            targetElement.classList.remove(targetTriggerClass);
-
-            // Remove any applied CSS variables with smooth transition
-            if (targetTriggerVarMode && variableRemover !== undefined) {
-              variableRemover();
-              variableRemover = undefined;
-            }
-          } else {
-            // User has scrolled beyond the threshold
-            targetElement.classList.add(targetTriggerClass);
-
-            // Apply CSS variables from the specified variable mode
-            if (targetTriggerVarMode && targetVarMode) {
-              // Inject variables and store the remover function for later use
-              variableRemover = injectCssVariables(targetElement, targetVarMode);
-            }
-          }
-        });
+      window.addEventListener('wfVarModesReady', (event) => {
+        varModes = event.detail.data;
+        targetVarMode = targetTriggerVarMode ? varModes[targetTriggerVarMode] : undefined;
       });
+
+      detectScrollAmount(initialOffset, (beforeTargetScroll) => {
+        if (beforeTargetScroll) {
+          // User is above the scroll threshold
+          targetElement.classList.remove(targetTriggerClass);
+
+          // Remove any applied CSS variables with smooth transition
+          if (targetTriggerVarMode && variableRemover !== undefined) {
+            variableRemover();
+            variableRemover = undefined;
+          }
+        } else {
+          // User has scrolled beyond the threshold
+          targetElement.classList.add(targetTriggerClass);
+
+          // Apply CSS variables from the specified variable mode
+          if (targetTriggerVarMode && targetVarMode) {
+            // Inject variables and store the remover function for later use
+            variableRemover = injectCssVariables(targetElement, targetVarMode);
+          }
+        }
+      });
+
       return;
     }
 
