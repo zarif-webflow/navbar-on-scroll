@@ -1,4 +1,5 @@
 import { detectScrollAmount } from "@/utils/detect-scroll-amount";
+import { getMultipleHtmlElements } from "@/utils/get-html-element";
 import { injectCssVariables } from "@/utils/inject-css-variables";
 import { fallback, parseFloatFallback } from "@/utils/util";
 
@@ -9,11 +10,11 @@ import { fallback, parseFloatFallback } from "@/utils/util";
  */
 const init = () => {
   // Find all elements that should respond to scroll position
-  const toggleAfterTargetScrollElements = Array.from(
-    document.querySelectorAll<HTMLElement>("[data-toggle-after-target-scroll-element]")
-  );
+  const toggleAfterTargetScrollElements = getMultipleHtmlElements({
+    selector: "[data-toggle-after-target-scroll-element]",
+  });
 
-  // Will be populated when wfVarModes is ready
+  if (!toggleAfterTargetScrollElements) return;
 
   // Set up scroll detection for each target element
   for (const targetElement of toggleAfterTargetScrollElements) {

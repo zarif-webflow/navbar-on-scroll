@@ -1,3 +1,4 @@
+import { getHtmlElement } from "@/utils/get-html-element";
 import { fallback, parseFloatFallback } from "@/utils/util";
 
 /**
@@ -6,12 +7,9 @@ import { fallback, parseFloatFallback } from "@/utils/util";
  */
 const init = () => {
   // Select the navbar element that has the data-navbar attribute
-  const navbar = document.querySelector<HTMLDivElement>("[data-navbar]");
+  const navbar = getHtmlElement({ selector: "[data-navbar]" });
 
-  if (!navbar) {
-    console.debug("[data-navbar] not found!");
-    return;
-  }
+  if (!navbar) return;
 
   // Get configuration from data attributes with fallback values
   // initialOffset: how far the user needs to scroll before the behavior activates
