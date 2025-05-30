@@ -13,7 +13,7 @@ export function injectCssVariables(
   const injectedProps: string[] = [];
 
   for (const [name, value] of Object.entries(variables)) {
-    if (name.startsWith('--')) {
+    if (name.startsWith("--")) {
       element.style.setProperty(name, value);
       injectedProps.push(name);
     }

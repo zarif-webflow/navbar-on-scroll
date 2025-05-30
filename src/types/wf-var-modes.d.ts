@@ -21,7 +21,7 @@ declare global {
    * Event dispatched when variable modes are ready
    */
   interface WfVarModesReadyEvent extends CustomEvent {
-    type: 'wfVarModesReady';
+    type: "wfVarModesReady";
     detail: { data: VariableModes };
   }
 

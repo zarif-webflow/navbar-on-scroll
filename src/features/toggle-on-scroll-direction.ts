@@ -1,4 +1,4 @@
-import { fallback, parseFloatFallback } from '@/utils/util';
+import { fallback, parseFloatFallback } from "@/utils/util";
 
 /**
  * Initializes navbar behavior that toggles a class based on scroll direction.
@@ -6,10 +6,10 @@ import { fallback, parseFloatFallback } from '@/utils/util';
  */
 const init = () => {
   // Select the navbar element that has the data-navbar attribute
-  const navbar = document.querySelector<HTMLDivElement>('[data-navbar]');
+  const navbar = document.querySelector<HTMLDivElement>("[data-navbar]");
 
   if (!navbar) {
-    console.debug('[data-navbar] not found!');
+    console.debug("[data-navbar] not found!");
     return;
   }
 
@@ -17,7 +17,7 @@ const init = () => {
   // initialOffset: how far the user needs to scroll before the behavior activates
   const initialOffset = parseFloatFallback(navbar.dataset.scrollDirectionInitialOffset, 160);
   // targetTriggerClass: the CSS class to add/remove when scrolling
-  const targetTriggerClass = fallback(navbar.dataset.scrollDirectionTriggerClass, 'scrolled-down');
+  const targetTriggerClass = fallback(navbar.dataset.scrollDirectionTriggerClass, "scrolled-down");
   // Reset threshold: position at which we reset the initialOffset check (defaults to 10px)
   const resetThreshold = 10;
 
@@ -29,7 +29,7 @@ const init = () => {
   let hasClassAdded = false;
 
   window.addEventListener(
-    'scroll',
+    "scroll",
     () => {
       // Get current scroll position
       const scrollPosition: number = window.scrollY || document.documentElement.scrollTop;
@@ -54,15 +54,15 @@ const init = () => {
       }
 
       // Determine scroll direction (down or up)
-      const scrollDirection = scrollPosition > lastScrollTop ? 'down' : 'up';
+      const scrollDirection = scrollPosition > lastScrollTop ? "down" : "up";
 
       // When scrolling down, add the class to hide the navbar
-      if (scrollDirection === 'down' && !hasClassAdded) {
+      if (scrollDirection === "down" && !hasClassAdded) {
         navbar.classList.add(targetTriggerClass);
         hasClassAdded = true;
       }
       // When scrolling up, remove the class to show the navbar
-      else if (scrollDirection === 'up' && hasClassAdded) {
+      else if (scrollDirection === "up" && hasClassAdded) {
         navbar.classList.remove(targetTriggerClass);
         hasClassAdded = false;
       }

@@ -1,6 +1,6 @@
-import { detectScrollAmount } from '@/utils/detect-scroll-amount';
-import { injectCssVariables } from '@/utils/inject-css-variables';
-import { fallback, parseFloatFallback } from '@/utils/util';
+import { detectScrollAmount } from "@/utils/detect-scroll-amount";
+import { injectCssVariables } from "@/utils/inject-css-variables";
+import { fallback, parseFloatFallback } from "@/utils/util";
 
 /**
  * Initializes scroll-based class and CSS variable toggling functionality
@@ -10,7 +10,7 @@ import { fallback, parseFloatFallback } from '@/utils/util';
 const init = () => {
   // Find all elements that should respond to scroll position
   const toggleAfterTargetScrollElements = Array.from(
-    document.querySelectorAll<HTMLElement>('[data-toggle-after-target-scroll-element]')
+    document.querySelectorAll<HTMLElement>("[data-toggle-after-target-scroll-element]")
   );
 
   // Will be populated when wfVarModes is ready
@@ -24,7 +24,7 @@ const init = () => {
     // The class to add when scrolled beyond the offset (defaults to 'scrolled-below')
     const targetTriggerClass = fallback(
       targetElement.dataset.afterScrollTriggerClass,
-      'scrolled-below'
+      "scrolled-below"
     );
 
     // Optional: variable mode to apply when scrolled beyond the offset
@@ -38,7 +38,7 @@ const init = () => {
       let targetVarMode =
         targetTriggerVarMode && varModes ? varModes[targetTriggerVarMode] : undefined;
 
-      window.addEventListener('wfVarModesReady', (event) => {
+      window.addEventListener("wfVarModesReady", (event) => {
         varModes = event.detail.data;
         targetVarMode = targetTriggerVarMode ? varModes[targetTriggerVarMode] : undefined;
       });
