@@ -1,6 +1,5 @@
 import { detectScrollAmount } from "@/utils/detect-scroll-amount";
 import { getMultipleHtmlElements } from "@/utils/get-html-element";
-import { injectCssVariables } from "@/utils/inject-css-variables";
 import { fallback, parseFloatFallback } from "@/utils/util";
 
 /**
@@ -27,47 +26,6 @@ const init = () => {
       targetElement.dataset.afterScrollTriggerClass,
       "scrolled-below"
     );
-
-    // Optional: variable mode to apply when scrolled beyond the offset
-    const targetTriggerVarMode = targetElement.dataset.afterScrollTriggerVarMode;
-
-    // Will hold the function that can revert injected CSS variables
-    let variableRemover: (() => void) | undefined = undefined;
-
-    if (targetTriggerVarMode !== undefined) {
-      let varModes = window.wfVarModes?.data;
-      let targetVarMode =
-        targetTriggerVarMode && varModes ? varModes[targetTriggerVarMode] : undefined;
-
-      window.addEventListener("wfVarModesReady", (event) => {
-        varModes = event.detail.data;
-        targetVarMode = targetTriggerVarMode ? varModes[targetTriggerVarMode] : undefined;
-      });
-
-      detectScrollAmount(initialOffset, (beforeTargetScroll) => {
-        if (beforeTargetScroll) {
-          // User is above the scroll threshold
-          targetElement.classList.remove(targetTriggerClass);
-
-          // Remove any applied CSS variables with smooth transition
-          if (targetTriggerVarMode && variableRemover !== undefined) {
-            variableRemover();
-            variableRemover = undefined;
-          }
-        } else {
-          // User has scrolled beyond the threshold
-          targetElement.classList.add(targetTriggerClass);
-
-          // Apply CSS variables from the specified variable mode
-          if (targetTriggerVarMode && targetVarMode) {
-            // Inject variables and store the remover function for later use
-            variableRemover = injectCssVariables(targetElement, targetVarMode);
-          }
-        }
-      });
-
-      return;
-    }
 
     detectScrollAmount(initialOffset, (beforeTargetScroll) => {
       if (beforeTargetScroll) {
