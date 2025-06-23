@@ -1,6 +1,6 @@
 import { detectScrollAmount } from "@/utils/detect-scroll-amount";
-import { getMultipleHtmlElements } from "@/utils/get-html-element";
-import { fallback, parseFloatFallback } from "@/utils/util";
+import { getHtmlElement, getMultipleHtmlElements } from "@/utils/get-html-element";
+import { createScrolledPastObserver, fallback, parseFloatFallback } from "@/utils/util";
 
 /**
  * Initializes scroll-based class and CSS variable toggling functionality
@@ -15,6 +15,11 @@ const init = () => {
 
   if (!toggleAfterTargetScrollElements) return;
 
+  const initialOffsetElement = getHtmlElement({
+    selector: "[after-target-scroll-offset-element]",
+    log: false,
+  });
+
   // Set up scroll detection for each target element
   for (const targetElement of toggleAfterTargetScrollElements) {
     // Get configuration from data attributes
@@ -26,6 +31,17 @@ const init = () => {
       targetElement.dataset.afterScrollTriggerClass,
       "scrolled-below"
     );
+
+    if (initialOffsetElement) {
+      createScrolledPastObserver(initialOffsetElement, (hasScrollPast) => {
+        if (hasScrollPast) {
+          targetElement.classList.add(targetTriggerClass);
+        } else {
+          targetElement.classList.remove(targetTriggerClass);
+        }
+      });
+      continue;
+    }
 
     detectScrollAmount(initialOffset, (beforeTargetScroll) => {
       if (beforeTargetScroll) {

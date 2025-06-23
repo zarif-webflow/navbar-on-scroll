@@ -56,12 +56,50 @@ var isScrollBelowElement = (element, offset = 0) => {
   const elementBottom = elementRect.bottom + scrollTop - elementRect.height + offset;
   return scrollTop > elementBottom;
 };
+var createScrolledPastObserver = (element, callback, offset = 0) => {
+  if (!element) {
+    throw new Error("Element is required for createScrolledPastObserver");
+  }
+  const checkInitialState = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const elementRect = element.getBoundingClientRect();
+    const elementBottom = elementRect.bottom + scrollTop - elementRect.height + offset;
+    callback(scrollTop > elementBottom);
+  };
+  checkInitialState();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+        const elementRect = entry.boundingClientRect;
+        const elementBottom = elementRect.bottom + currentScrollTop - elementRect.height + offset;
+        const hasScrolledPast = currentScrollTop > elementBottom;
+        if (!entry.isIntersecting) {
+          callback(hasScrolledPast);
+        } else {
+          callback(false);
+        }
+      });
+    },
+    {
+      threshold: 0,
+      // Add root margin to detect slightly before the element leaves viewport
+      rootMargin: `0px 0px ${-offset}px 0px`
+    }
+  );
+  observer.observe(element);
+  const cleanup = () => {
+    observer.disconnect();
+  };
+  return { observer, cleanup };
+};
 
 export {
   getHtmlElement,
   getMultipleHtmlElements,
   fallback,
   parseFloatFallback,
-  isScrollBelowElement
+  isScrollBelowElement,
+  createScrolledPastObserver
 };
-//# sourceMappingURL=chunk-2GPASJGW.js.map
+//# sourceMappingURL=chunk-NUXPWTH6.js.map
