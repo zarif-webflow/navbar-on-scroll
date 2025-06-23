@@ -1,5 +1,5 @@
 import { getHtmlElement } from "@/utils/get-html-element";
-import { fallback, parseFloatFallback } from "@/utils/util";
+import { fallback, isScrollBelowElement, parseFloatFallback } from "@/utils/util";
 
 /**
  * Initializes navbar behavior that toggles a class based on scroll direction.
@@ -10,6 +10,11 @@ const init = () => {
   const navbar = getHtmlElement({ selector: "[data-navbar]" });
 
   if (!navbar) return;
+
+  const initialOffsetElement = getHtmlElement({
+    selector: "[scroll-direction-offset-element]",
+    log: false,
+  });
 
   // Get configuration from data attributes with fallback values
   // initialOffset: how far the user needs to scroll before the behavior activates
@@ -23,6 +28,8 @@ const init = () => {
   let lastScrollTop: number = window.scrollY || document.documentElement.scrollTop;
   // Flag to track if we've scrolled past the initial offset
   let hasPassedInitialOffset = false;
+
+  // const stopDirectionChange = false;
   // Flag to avoid repeatedly adding/removing the class
   let hasClassAdded = false;
 
@@ -32,23 +39,33 @@ const init = () => {
       // Get current scroll position
       const scrollPosition: number = window.scrollY || document.documentElement.scrollTop;
 
-      // Reset the initialOffset check when close to the top of the page
-      if (scrollPosition <= resetThreshold) {
-        hasPassedInitialOffset = false;
-        // Also remove the class if it's added
-        if (hasClassAdded) {
+      if (initialOffsetElement) {
+        const isBelowInitialOffsetElement = isScrollBelowElement(initialOffsetElement);
+
+        if (!isBelowInitialOffsetElement) {
           navbar.classList.remove(targetTriggerClass);
           hasClassAdded = false;
+          return;
         }
-      }
+      } else {
+        // Reset the initialOffset check when close to the top of the page
+        if (scrollPosition <= resetThreshold) {
+          hasPassedInitialOffset = false;
+          // Also remove the class if it's added
+          if (hasClassAdded) {
+            navbar.classList.remove(targetTriggerClass);
+            hasClassAdded = false;
+          }
+        }
 
-      // Only activate behavior after scrolling past initialOffset
-      if (!hasPassedInitialOffset) {
-        if (scrollPosition >= initialOffset) {
-          hasPassedInitialOffset = true;
-          lastScrollTop = scrollPosition;
+        // Only activate behavior after scrolling past initialOffset
+        if (!hasPassedInitialOffset) {
+          if (scrollPosition >= initialOffset) {
+            hasPassedInitialOffset = true;
+            lastScrollTop = scrollPosition;
+          }
+          return;
         }
-        return;
       }
 
       // Determine scroll direction (down or up)
